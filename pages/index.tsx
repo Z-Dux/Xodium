@@ -234,7 +234,6 @@ export default function Component() {
       <h1 className="text-5xl font-heading text-center mb-3 font-'Lilita One'">
         Xodium
       </h1>
-     
       <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
         {/* Front Claw */}
         <div className="border border-neutral-700 p-6 rounded-lg shadow-lg col-span-1">
