@@ -2,7 +2,7 @@
 
 import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 import React, { useState } from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -14,7 +14,6 @@ import { ArrowDown, ArrowUp } from "lucide-react";
 import { Power, Wifi } from "lucide-react";
 import { Lock, Unlock } from "lucide-react";
 export default function Component() {
-  
   const [frontClawPower, setFrontClawPower] = useState(false);
   const [topClawPower, setTopClawPower] = useState(false);
   const [mainPower, setMainPower] = useState(false);
@@ -30,7 +29,6 @@ export default function Component() {
   const [topClawLeftRight, setTopClawLeftRight] = useState(55);
   const [topClawLockPosition, setTopClawLockPosition] = useState(false);
 
-  const [sliderSpeed, setSliderSpeed] = useState(50);
   const [scrollLocked, setScrollLocked] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [active, setActive] = useState(false);
@@ -64,6 +62,47 @@ export default function Component() {
     acutator: 0,
     power: mainPower,
   };
+  const connectWebSocket = useCallback(() => {
+    if (!isConnected) {
+      socket.current = new WebSocket(`ws://192.168.4.1:81`);
+      socket.current.onopen = () => {
+        console.log("WebSocket connected");
+        setIsConnected(true);
+      };
+      socket.current.onclose = () => {
+        console.log("WebSocket disconnected");
+        setIsConnected(false);
+      };
+      socket.current.onmessage = (event) => {
+        console.log("Received from ESP32:", event.data);
+      };
+    } else {
+      socket.current?.close();
+      setIsConnected(false);
+    }
+  }, [isConnected]);
+
+  const sendMessage = useCallback((message: string) => {
+    if (socket.current?.readyState === WebSocket.OPEN) {
+      socket.current.send(message);
+    } else {
+      console.log("WebSocket not open");
+    }
+  }, []);
+
+  const transmitData = useCallback(() => {
+    let data = JSON.stringify(controls, null, 2);
+    console.log(data);
+    sendMessage(data);
+  }, [controls, sendMessage]);
+
+  useEffect(() => {
+    const intervalId = setInterval(transmitData, 100); // Increased frequency for smoother updates
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [transmitData]);
 
   useEffect(() => {
     const handleMove = (clientX: number, clientY: number) => {
@@ -98,6 +137,8 @@ export default function Component() {
               100
           )
         );
+
+        transmitData(); // Trigger data transmission on every joystick movement
       }
     };
 
@@ -113,6 +154,7 @@ export default function Component() {
       setPosition({ x: 0, y: 0 });
       setAngle(0);
       setSpeed(0);
+      transmitData(); // Ensure final position is transmitted
     };
 
     if (active) {
@@ -128,7 +170,7 @@ export default function Component() {
       window.removeEventListener("mouseup", handleEnd);
       window.removeEventListener("touchend", handleEnd);
     };
-  }, [active]);
+  }, [active, transmitData]);
 
   useEffect(() => {
     const preventDefault = (e: Event) => {
@@ -158,30 +200,6 @@ export default function Component() {
     setScrollLocked(!scrollLocked);
   };
 
-  const handleConnect = () => {
-    //if (isConnected) socket?.current?.close();
-    //setIsConnected(!isConnected);
-    if (!isConnected) {
-      socket.current = new WebSocket(`ws://192.168.4.1:81`);
-      console.log(socket.current);
-      socket.current.onopen = () => {
-        console.log("WebSocket connected");
-        setIsConnected(true);
-      };
-      socket.current.onclose = () => {
-        console.log("WebSocket disconnected");
-        setIsConnected(false);
-      };
-      setIsConnected(true);
-      socket.current.onmessage = (event) => {
-        console.log("Received from ESP32:", event.data);
-      };
-    } else {
-      socket.current?.close();
-      setIsConnected(false);
-    }
-  };
-
   const handleReel = (
     device: "pulley" | "acutator",
     direction: "in" | "out" | "stop"
@@ -205,31 +223,7 @@ export default function Component() {
     }
     handleReel(device, "stop");
   };
-  const sendMessage = (message: string) => {
-    if (socket.current?.readyState === WebSocket.OPEN && socket.current.OPEN) {
-      socket.current.send(message);
-    } else {
-      console.log("WebSocket not open");
-    }
-  };
 
-  useEffect(() => {
-    //if(socket.current?.OPEN == 1) return console.log(`Open connection found!`);
-
-    
-
-    return () => {
-      //clearInterval(intervalId);
-      //socket.current?.close();
-    };
-  }, [controls]);
-  const transmitData = () => {
-    let data = JSON.stringify(controls, null, 2);
-    //console.log(data);
-    sendMessage(data);
-  };
-
-  const intervalId = setInterval(transmitData, 1000);
   return (
     <div className="min-h-screen bg-neutrak-900 text-neutral-200 p-6 rounded-lg max-w-full mx-auto">
       <h1 className="text-5xl font-heading text-center mb-3 font-'Lilita One'">
@@ -438,7 +432,7 @@ export default function Component() {
                 </Badge>
                 <Button
                   variant={isConnected ? "destructive" : "default"}
-                  onClick={handleConnect}
+                  onClick={connectWebSocket}
                 >
                   {isConnected ? "Disconnect" : "Connect"}
                 </Button>
@@ -505,13 +499,13 @@ export default function Component() {
       <div className="mt-4 flex items-center">
         <span className="block mb-2 font-body">Speed</span>
         <Slider
-          value={[sliderSpeed]}
-          onValueChange={(newValue) => setSliderSpeed(newValue[0])}
+          value={[speed]}
+          onValueChange={(newValue) => setSpeed(newValue[0])}
           max={100}
           step={1}
           className="[&_[role=slider]]:bg-zinc-200"
         />
-        <span className="text-sm text-neutral-400 ml-3">{sliderSpeed}/100</span>
+        <span className="text-sm text-neutral-400 ml-3">{speed}/100</span>
       </div>
 
       <div className="mt-4 flex items-center">
