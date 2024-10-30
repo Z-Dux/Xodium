@@ -1,3 +1,5 @@
+//Fix the script in the following code.  Analyse the needs and make the websocket sync with the disconnect button. Have the code made into needed functions and make sure to call them whenever needed only
+
 import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
@@ -12,6 +14,7 @@ import { ArrowDown, ArrowUp } from "lucide-react";
 import { Power, Wifi } from "lucide-react";
 import { Lock, Unlock } from "lucide-react";
 export default function Component() {
+  
   const [frontClawPower, setFrontClawPower] = useState(false);
   const [topClawPower, setTopClawPower] = useState(false);
   const [mainPower, setMainPower] = useState(false);
@@ -156,16 +159,26 @@ export default function Component() {
   };
 
   const handleConnect = () => {
-    setIsConnected(!isConnected);
+    //if (isConnected) socket?.current?.close();
+    //setIsConnected(!isConnected);
     if (!isConnected) {
       socket.current = new WebSocket(`ws://192.168.4.1:81`);
-
-      socket.current.onopen = () => console.log("WebSocket connected");
-      socket.current.onclose = () => console.log("WebSocket disconnected");
-
+      console.log(socket.current);
+      socket.current.onopen = () => {
+        console.log("WebSocket connected");
+        setIsConnected(true);
+      };
+      socket.current.onclose = () => {
+        console.log("WebSocket disconnected");
+        setIsConnected(false);
+      };
+      setIsConnected(true);
       socket.current.onmessage = (event) => {
         console.log("Received from ESP32:", event.data);
       };
+    } else {
+      socket.current?.close();
+      setIsConnected(false);
     }
   };
 
@@ -193,31 +206,35 @@ export default function Component() {
     handleReel(device, "stop");
   };
   const sendMessage = (message: string) => {
-    if (socket.current?.readyState === WebSocket.OPEN) {
+    if (socket.current?.readyState === WebSocket.OPEN && socket.current.OPEN) {
       socket.current.send(message);
     } else {
-      console.error("WebSocket not open");
+      console.log("WebSocket not open");
     }
   };
-  useEffect(() => {
-    const transmitData = () => {
-      let data = JSON.stringify(controls, null, 2);
-      //console.log(data);
-    };
 
-    const intervalId = setInterval(transmitData, 1000);
+  useEffect(() => {
+    //if(socket.current?.OPEN == 1) return console.log(`Open connection found!`);
+
+    
 
     return () => {
-      clearInterval(intervalId);
-      socket.current?.close();
+      //clearInterval(intervalId);
+      //socket.current?.close();
     };
   }, [controls]);
+  const transmitData = () => {
+    let data = JSON.stringify(controls, null, 2);
+    //console.log(data);
+    sendMessage(data);
+  };
+
+  const intervalId = setInterval(transmitData, 1000);
   return (
     <div className="min-h-screen bg-neutrak-900 text-neutral-200 p-6 rounded-lg max-w-full mx-auto">
       <h1 className="text-5xl font-heading text-center mb-3 font-'Lilita One'">
         Xodium
       </h1>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
         {/* Front Claw */}
         <div className="border border-neutral-700 p-6 rounded-lg shadow-lg col-span-1">
