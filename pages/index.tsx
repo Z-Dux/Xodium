@@ -157,6 +157,16 @@ export default function Component() {
 
   const handleConnect = () => {
     setIsConnected(!isConnected);
+    if (!isConnected) {
+      socket.current = new WebSocket(`ws://192.168.4.1:81`);
+
+      socket.current.onopen = () => console.log("WebSocket connected");
+      socket.current.onclose = () => console.log("WebSocket disconnected");
+
+      socket.current.onmessage = (event) => {
+        console.log("Received from ESP32:", event.data);
+      };
+    }
   };
 
   const handleReel = (
@@ -190,15 +200,6 @@ export default function Component() {
     }
   };
   useEffect(() => {
-    socket.current = new WebSocket(`wss://192.168.4.1:81`);
-
-    socket.current.onopen = () => console.log("WebSocket connected");
-    socket.current.onclose = () => console.log("WebSocket disconnected");
-
-    socket.current.onmessage = (event) => {
-      console.log("Received from ESP32:", event.data);
-    };
-
     const transmitData = () => {
       let data = JSON.stringify(controls, null, 2);
       //console.log(data);
