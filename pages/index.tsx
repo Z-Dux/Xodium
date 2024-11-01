@@ -19,14 +19,14 @@ export default function Component() {
   const [mainPower, setMainPower] = useState(false);
   const [websocketConnected, setWebsocketConnected] = useState(false);
 
-  const [frontClawOpenClose, setFrontClawOpenClose] = useState(105);
-  const [frontClawUpDown, setFrontClawUpDown] = useState(90);
-  const [frontClawLeftRight, setFrontClawLeftRight] = useState(140);
+  const [frontClawOpenClose, setFrontClawOpenClose] = useState(180);
+  const [frontClawUpDown, setFrontClawUpDown] = useState(0);
+  const [frontClawLeftRight, setFrontClawLeftRight] = useState(0);
   const [frontClawLockPosition, setFrontClawLockPosition] = useState(false);
 
-  const [topClawOpenClose, setTopClawOpenClose] = useState(25);
-  const [topClawUpDown, setTopClawUpDown] = useState(110);
-  const [topClawLeftRight, setTopClawLeftRight] = useState(55);
+  const [topClawOpenClose, setTopClawOpenClose] = useState(0);
+  const [topClawUpDown, setTopClawUpDown] = useState(0);
+  const [topClawLeftRight, setTopClawLeftRight] = useState(0);
   const [topClawLockPosition, setTopClawLockPosition] = useState(false);
 
   const [scrollLocked, setScrollLocked] = useState(false);
@@ -248,7 +248,7 @@ export default function Component() {
                 setValue: setFrontClawUpDown,
               },
               {
-                label: "Left/Right",
+                label: "Rotate",
                 value: frontClawLeftRight,
                 setValue: setFrontClawLeftRight,
               },
@@ -307,11 +307,11 @@ export default function Component() {
                 value: topClawUpDown,
                 setValue: setTopClawUpDown,
               },
-              {
-                label: "Left/Right",
+              /*{
+                label: "Rotate",
                 value: topClawLeftRight,
                 setValue: setTopClawLeftRight,
-              },
+              },*/
             ].map(({ label, value, setValue }) => (
               <div key={label}>
                 <span className="block mb-2">{label}</span>
