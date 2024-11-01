@@ -82,6 +82,14 @@ export default function Component() {
     }
   }, [isConnected]);
 
+  const handleSliderChange = (
+    setValue: React.Dispatch<React.SetStateAction<number>>,
+    newValue: number[]
+  ) => {
+    setValue(newValue[0]);
+    transmitData();
+  };
+
   const sendMessage = useCallback((message: string) => {
     if (socket.current?.readyState === WebSocket.OPEN) {
       socket.current.send(message);
@@ -258,7 +266,8 @@ export default function Component() {
                 <div className="flex items-center">
                   <Slider
                     value={[value]}
-                    onValueChange={(newValue) => setValue(newValue[0])}
+                    //onValueChange={(newValue) => setValue(newValue[0])}
+                    onValueChange={(newValue) => handleSliderChange(setValue, newValue)}
                     max={180}
                     step={1}
                     className="[&_[role=slider]]:bg-slate-450"
@@ -318,7 +327,9 @@ export default function Component() {
                 <div className="flex items-center">
                   <Slider
                     value={[value]}
-                    onValueChange={(newValue) => setValue(newValue[0])}
+                    onValueChange={(newValue) => handleSliderChange(setValue, newValue)}
+
+                    //onValueChange={(newValue) => setValue(newValue[0])}
                     max={180}
                     step={1}
                     className="[&_[role=slider]]:bg-zinc-200"
