@@ -41,26 +41,26 @@ export default function Component() {
   const [isPoweredOn, setIsPoweredOn] = useState(false);
 
   const controls = {
-    frontClaw: {
+    f: {
       oc: frontClawOpenClose,
       ud: frontClawUpDown,
       lr: frontClawLeftRight,
       lp: frontClawLockPosition,
     },
-    topClaw: {
+    t: {
       oc: topClawOpenClose,
       up: topClawUpDown,
       lr: topClawLeftRight,
       lp: topClawLockPosition,
     },
-    joystick: {
-      angle,
-      speed,
-      active,
+    j: {
+      d:angle,
+      s:speed,
+      a: active,
     },
-    pulley: 0,
-    acutator: 0,
-    power: mainPower,
+    p: 0,//pulley
+    a: 0,//acutator
+    m: mainPower, //power bool
   };
   const connectWebSocket = useCallback(() => {
     if (!isConnected) {
@@ -97,7 +97,7 @@ export default function Component() {
   }, [controls, sendMessage]);
 
   useEffect(() => {
-    const intervalId = setInterval(transmitData, 100); // Increased frequency for smoother updates
+    const intervalId = setInterval(transmitData, 500); // Increased frequency for smoother updates
 
     return () => {
       clearInterval(intervalId);
@@ -137,8 +137,7 @@ export default function Component() {
               100
           )
         );
-
-        transmitData(); // Trigger data transmission on every joystick movement
+        transmitData(); 
       }
     };
 
@@ -201,7 +200,7 @@ export default function Component() {
   };
 
   const handleReel = (
-    device: "pulley" | "acutator",
+    device: "p" | "a",
     direction: "in" | "out" | "stop"
   ) => {
     controls[device] = direction === "in" ? 1 : direction === "out" ? -1 : 0;
@@ -210,13 +209,13 @@ export default function Component() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const startReeling = (
-    device: "pulley" | "acutator",
+    device: "p" | "a",
     direction: "in" | "out"
   ) => {
     intervalRef.current = setInterval(() => handleReel(device, direction), 100);
   };
 
-  const stopReeling = (device: "pulley" | "acutator") => {
+  const stopReeling = (device: "p" | "a") => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -357,18 +356,18 @@ export default function Component() {
               <CardContent className="space-y-4">
                 <div className="flex justify-between gap-4">
                   <Button
-                    onMouseDown={() => startReeling("acutator", "in")}
-                    onMouseUp={() => stopReeling("acutator")}
-                    onMouseLeave={() => stopReeling("acutator")} // Stop if the mouse leaves the button area
+                    onMouseDown={() => startReeling("a", "in")}
+                    onMouseUp={() => stopReeling("a")}
+                    onMouseLeave={() => stopReeling("a")} // Stop if the mouse leaves the button area
                     className="flex-1 h-20 text-2xl"
                   >
                     <ArrowUp className="mr-2 h-10 w-10 font-subheading " /> Reel
                     In
                   </Button>
                   <Button
-                    onMouseDown={() => startReeling("acutator", "out")}
-                    onMouseUp={() => stopReeling("acutator")}
-                    onMouseLeave={() => stopReeling("acutator")}
+                    onMouseDown={() => startReeling("a", "out")}
+                    onMouseUp={() => stopReeling("a")}
+                    onMouseLeave={() => stopReeling("a")}
                     className="flex-1 h-20 text-2xl"
                   >
                     <ArrowDown className="mr-2 h-10 w-10 " /> Reel Out
@@ -386,17 +385,17 @@ export default function Component() {
               <CardContent className="space-y-4">
                 <div className="flex justify-between gap-4">
                   <Button
-                    onMouseDown={() => startReeling("pulley", "in")}
-                    onMouseUp={() => stopReeling("pulley")}
-                    onMouseLeave={() => stopReeling("pulley")}
+                    onMouseDown={() => startReeling("p", "in")}
+                    onMouseUp={() => stopReeling("p")}
+                    onMouseLeave={() => stopReeling("p")}
                     className="flex-1 h-20 text-2xl"
                   >
                     <ArrowUp className="mr-2 h-10 w-10 " /> Reel In
                   </Button>
                   <Button
-                    onMouseDown={() => startReeling("pulley", "out")}
-                    onMouseUp={() => stopReeling("pulley")}
-                    onMouseLeave={() => stopReeling("pulley")}
+                    onMouseDown={() => startReeling("p", "out")}
+                    onMouseUp={() => stopReeling("p")}
+                    onMouseLeave={() => stopReeling("p")}
                     className="flex-1 h-20 text-2xl"
                   >
                     <ArrowDown className="mr-2 h-10 w-10 " /> Reel Out
