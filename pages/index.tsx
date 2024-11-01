@@ -54,12 +54,12 @@ export default function Component() {
       lp: topClawLockPosition,
     },
     j: {
-      d:angle,
-      s:speed,
+      d: angle,
+      s: speed,
       a: active,
     },
-    p: 0,//pulley
-    a: 0,//acutator
+    p: 0, //pulley
+    a: 0, //acutator
     m: mainPower, //power bool
   };
   const connectWebSocket = useCallback(() => {
@@ -137,8 +137,7 @@ export default function Component() {
               100
           )
         );
-
-        transmitData(); // Trigger data transmission on every joystick movement
+        transmitData();
       }
     };
 
@@ -200,19 +199,13 @@ export default function Component() {
     setScrollLocked(!scrollLocked);
   };
 
-  const handleReel = (
-    device: "p" | "a",
-    direction: "in" | "out" | "stop"
-  ) => {
+  const handleReel = (device: "p" | "a", direction: "in" | "out" | "stop") => {
     controls[device] = direction === "in" ? 1 : direction === "out" ? -1 : 0;
   };
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const startReeling = (
-    device: "p" | "a",
-    direction: "in" | "out"
-  ) => {
+  const startReeling = (device: "p" | "a", direction: "in" | "out") => {
     intervalRef.current = setInterval(() => handleReel(device, direction), 100);
   };
 
@@ -347,75 +340,75 @@ export default function Component() {
           </div>
         </div>
         <div className="space-y-6">
-        <div className="grid gap-6 md:grid-rows-2 mt-[0.1%]">
-          <Card className="bg-neutral-950 border-neutral-700 text-white font-body">
-            <CardHeader>
-              <CardTitle className="font-subheading text-2xl">
-                Linear Actuator
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between gap-4">
-                <Button
-                  onMouseDown={() => startReeling("a", "in")}
-                  onMouseUp={() => stopReeling("a")}
-                  onMouseLeave={() => stopReeling("a")}
-                  onTouchStart={() => startReeling("a", "in")}
-                  onTouchEnd={() => stopReeling("a")}
-                  className="flex-1 h-20 text-2xl transition-all duration-200 active:bg-blue-600 active:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
-                >
-                  <ArrowUp className="mr-2 h-10 w-10 font-subheading" /> Reel
-                  In
-                </Button>
-                <Button
-                  onMouseDown={() => startReeling("a", "out")}
-                  onMouseUp={() => stopReeling("a")}
-                  onMouseLeave={() => stopReeling("a")}
-                  onTouchStart={() => startReeling("a", "out")}
-                  onTouchEnd={() => stopReeling("a")}
-                  className="flex-1 h-20 text-2xl transition-all duration-200 active:bg-blue-600 active:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
-                >
-                  <ArrowDown className="mr-2 h-10 w-10" /> Reel Out
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="grid gap-6 md:grid-rows-2 mt-[0.1%]">
+            <Card className="bg-neutral-950 border-neutral-700 text-white font-body">
+              <CardHeader>
+                <CardTitle className="font-subheading text-2xl">
+                  Linear Actuator
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between gap-4">
+                  <Button
+                    onMouseDown={() => startReeling("a", "in")}
+                    onMouseUp={() => stopReeling("a")}
+                    onMouseLeave={() => stopReeling("a")}
+                    onTouchStart={() => startReeling("a", "in")}
+                    onTouchEnd={() => stopReeling("a")}
+                    className="flex-1 h-20 text-2xl transition-all duration-200 active:bg-blue-600 active:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+                  >
+                    <ArrowUp className="mr-2 h-10 w-10 font-subheading" /> Reel
+                    In
+                  </Button>
+                  <Button
+                    onMouseDown={() => startReeling("a", "out")}
+                    onMouseUp={() => stopReeling("a")}
+                    onMouseLeave={() => stopReeling("a")}
+                    onTouchStart={() => startReeling("a", "out")}
+                    onTouchEnd={() => stopReeling("a")}
+                    className="flex-1 h-20 text-2xl transition-all duration-200 active:bg-blue-600 active:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+                  >
+                    <ArrowDown className="mr-2 h-10 w-10" /> Reel Out
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card className="bg-neutral-950 border-neutral-700 text-body font-body">
-            <CardHeader>
-              <CardTitle className="font-subheading text-2xl">
-                Pulley System
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between gap-4">
-                <Button
-                  onMouseDown={() => startReeling("p", "in")}
-                  onMouseUp={() => stopReeling("p")}
-                  onMouseLeave={() => stopReeling("p")}
-                  onTouchStart={() => startReeling("p", "in")}
-                  onTouchEnd={() => stopReeling("p")}
-                  className="flex-1 h-20 text-2xl transition-all duration-200 active:bg-blue-600 active:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
-                >
-                  <ArrowUp className="mr-2 h-10 w-10" /> Reel In
-                </Button>
-                <Button
-                  onMouseDown={() => startReeling("p", "out")}
-                  onMouseUp={() => stopReeling("p")}
-                  onMouseLeave={() => stopReeling("p")}
-                  onTouchStart={() => startReeling("p", "out")}
-                  onTouchEnd={() => stopReeling("p")}
-                  className="flex-1 h-20 text-2xl transition-all duration-200 active:bg-blue-600 active:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
-                >
-                  <ArrowDown className="mr-2 h-10 w-10" /> Reel Out
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+            <Card className="bg-neutral-950 border-neutral-700 text-body font-body">
+              <CardHeader>
+                <CardTitle className="font-subheading text-2xl">
+                  Pulley System
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between gap-4">
+                  <Button
+                    onMouseDown={() => startReeling("p", "in")}
+                    onMouseUp={() => stopReeling("p")}
+                    onMouseLeave={() => stopReeling("p")}
+                    onTouchStart={() => startReeling("p", "in")}
+                    onTouchEnd={() => stopReeling("p")}
+                    className="flex-1 h-20 text-2xl transition-all duration-200 active:bg-blue-600 active:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+                  >
+                    <ArrowUp className="mr-2 h-10 w-10" /> Reel In
+                  </Button>
+                  <Button
+                    onMouseDown={() => startReeling("p", "out")}
+                    onMouseUp={() => stopReeling("p")}
+                    onMouseLeave={() => stopReeling("p")}
+                    onTouchStart={() => startReeling("p", "out")}
+                    onTouchEnd={() => stopReeling("p")}
+                    className="flex-1 h-20 text-2xl transition-all duration-200 active:bg-blue-600 active:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+                  >
+                    <ArrowDown className="mr-2 h-10 w-10" /> Reel Out
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* ... (rest of the JSX remains unchanged) */}
         </div>
-
-        {/* ... (rest of the JSX remains unchanged) */}
-      </div>
         {/* Joystick */}
         <div className="border border-neutral-700 p-6 rounded-lg shadow-lg col-span-1">
           <h2 className="text-2xl font-subheading mb-4">Movement</h2>
