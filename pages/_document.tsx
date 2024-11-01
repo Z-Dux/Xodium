@@ -12,7 +12,7 @@ class MyDocument extends Document {
           <meta name="description" content="Made by dux? what is this?" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-          <meta name="apple-mobile-web-app-title" content="Xodium" />
+          <meta name="apple-mobile-web-app-title" content="Crused" />
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"

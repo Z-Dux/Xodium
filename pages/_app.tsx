@@ -16,8 +16,8 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="description" content="Made by dux? what is this?" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Xodium" />
-        <title>Xodium</title>
+        <meta name="apple-mobile-web-app-title" content="Crused" />
+        <title>Crused</title>
         <link
           href="https://fonts.googleapis.com/css2?family=Handjet:wght@100..900&family=Lilita+One&display=swap"
           rel="stylesheet"
