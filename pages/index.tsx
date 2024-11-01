@@ -41,26 +41,26 @@ export default function Component() {
   const [isPoweredOn, setIsPoweredOn] = useState(false);
 
   const controls = {
-    frontClaw: {
+    f: {
       oc: frontClawOpenClose,
       ud: frontClawUpDown,
       lr: frontClawLeftRight,
       lp: frontClawLockPosition,
     },
-    topClaw: {
+    t: {
       oc: topClawOpenClose,
       up: topClawUpDown,
       lr: topClawLeftRight,
       lp: topClawLockPosition,
     },
-    joystick: {
-      angle,
-      speed,
-      active,
+    j: {
+      d:angle,
+      s:speed,
+      a: active,
     },
-    pulley: 0,
-    acutator: 0,
-    power: mainPower,
+    p: 0,//pulley
+    a: 0,//acutator
+    m: mainPower, //power bool
   };
   const connectWebSocket = useCallback(() => {
     if (!isConnected) {
@@ -97,7 +97,7 @@ export default function Component() {
   }, [controls, sendMessage]);
 
   useEffect(() => {
-    const intervalId = setInterval(transmitData, 100); // Increased frequency for smoother updates
+    const intervalId = setInterval(transmitData, 500); // Increased frequency for smoother updates
 
     return () => {
       clearInterval(intervalId);
@@ -201,7 +201,7 @@ export default function Component() {
   };
 
   const handleReel = (
-    device: "pulley" | "acutator",
+    device: "p" | "a",
     direction: "in" | "out" | "stop"
   ) => {
     controls[device] = direction === "in" ? 1 : direction === "out" ? -1 : 0;
@@ -210,13 +210,13 @@ export default function Component() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const startReeling = (
-    device: "pulley" | "acutator",
+    device: "p" | "a",
     direction: "in" | "out"
   ) => {
     intervalRef.current = setInterval(() => handleReel(device, direction), 100);
   };
 
-  const stopReeling = (device: "pulley" | "acutator") => {
+  const stopReeling = (device: "p" | "a") => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -347,107 +347,75 @@ export default function Component() {
           </div>
         </div>
         <div className="space-y-6">
-          <div className="grid gap-6 md:grid-rows-2 mt-[0.1%]">
-            <Card className="bg-neutral-950 border-neutral-700 text-white font-body">
-              <CardHeader>
-                <CardTitle className="font-subheading text-2xl">
-                  Linear Actuator
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between gap-4">
-                  <Button
-                    onMouseDown={() => startReeling("acutator", "in")}
-                    onMouseUp={() => stopReeling("acutator")}
-                    onMouseLeave={() => stopReeling("acutator")} // Stop if the mouse leaves the button area
-                    className="flex-1 h-20 text-2xl"
-                  >
-                    <ArrowUp className="mr-2 h-10 w-10 font-subheading " /> Reel
-                    In
-                  </Button>
-                  <Button
-                    onMouseDown={() => startReeling("acutator", "out")}
-                    onMouseUp={() => stopReeling("acutator")}
-                    onMouseLeave={() => stopReeling("acutator")}
-                    className="flex-1 h-20 text-2xl"
-                  >
-                    <ArrowDown className="mr-2 h-10 w-10 " /> Reel Out
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-neutral-950 border-neutral-700 text-body font-body">
-              <CardHeader>
-                <CardTitle className="font-subheading text-2xl">
-                  Pulley System
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between gap-4">
-                  <Button
-                    onMouseDown={() => startReeling("pulley", "in")}
-                    onMouseUp={() => stopReeling("pulley")}
-                    onMouseLeave={() => stopReeling("pulley")}
-                    className="flex-1 h-20 text-2xl"
-                  >
-                    <ArrowUp className="mr-2 h-10 w-10 " /> Reel In
-                  </Button>
-                  <Button
-                    onMouseDown={() => startReeling("pulley", "out")}
-                    onMouseUp={() => stopReeling("pulley")}
-                    onMouseLeave={() => stopReeling("pulley")}
-                    className="flex-1 h-20 text-2xl"
-                  >
-                    <ArrowDown className="mr-2 h-10 w-10 " /> Reel Out
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+        <div className="grid gap-6 md:grid-rows-2 mt-[0.1%]">
+          <Card className="bg-neutral-950 border-neutral-700 text-white font-body">
+            <CardHeader>
+              <CardTitle className="font-subheading text-2xl">
+                Linear Actuator
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex justify-between gap-4">
+                <Button
+                  onMouseDown={() => startReeling("a", "in")}
+                  onMouseUp={() => stopReeling("a")}
+                  onMouseLeave={() => stopReeling("a")}
+                  onTouchStart={() => startReeling("a", "in")}
+                  onTouchEnd={() => stopReeling("a")}
+                  className="flex-1 h-20 text-2xl transition-all duration-200 active:bg-blue-600 active:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+                >
+                  <ArrowUp className="mr-2 h-10 w-10 font-subheading" /> Reel
+                  In
+                </Button>
+                <Button
+                  onMouseDown={() => startReeling("a", "out")}
+                  onMouseUp={() => stopReeling("a")}
+                  onMouseLeave={() => stopReeling("a")}
+                  onTouchStart={() => startReeling("a", "out")}
+                  onTouchEnd={() => stopReeling("a")}
+                  className="flex-1 h-20 text-2xl transition-all duration-200 active:bg-blue-600 active:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+                >
+                  <ArrowDown className="mr-2 h-10 w-10" /> Reel Out
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           <Card className="bg-neutral-950 border-neutral-700 text-body font-body">
             <CardHeader>
               <CardTitle className="font-subheading text-2xl">
-                Connection
+                Pulley System
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Badge
-                  variant={isConnected ? "default" : "destructive"}
-                  className="h-6 px-2 text-sm"
-                >
-                  {isConnected ? (
-                    <>
-                      <Wifi className="mr-2 h-4 w-4" />
-                      Connected
-                    </>
-                  ) : (
-                    <>
-                      <Wifi className="mr-2 h-4 w-4" />
-                      Disconnected
-                    </>
-                  )}
-                </Badge>
+              <div className="flex justify-between gap-4">
                 <Button
-                  variant={isConnected ? "destructive" : "default"}
-                  onClick={connectWebSocket}
+                  onMouseDown={() => startReeling("p", "in")}
+                  onMouseUp={() => stopReeling("p")}
+                  onMouseLeave={() => stopReeling("p")}
+                  onTouchStart={() => startReeling("p", "in")}
+                  onTouchEnd={() => stopReeling("p")}
+                  className="flex-1 h-20 text-2xl transition-all duration-200 active:bg-blue-600 active:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
                 >
-                  {isConnected ? "Disconnect" : "Connect"}
+                  <ArrowUp className="mr-2 h-10 w-10" /> Reel In
                 </Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="font-medium">Power</span>
-                <Switch
-                  checked={isPoweredOn}
-                  onCheckedChange={setIsPoweredOn}
-                  disabled={!isConnected}
-                />
+                <Button
+                  onMouseDown={() => startReeling("p", "out")}
+                  onMouseUp={() => stopReeling("p")}
+                  onMouseLeave={() => stopReeling("p")}
+                  onTouchStart={() => startReeling("p", "out")}
+                  onTouchEnd={() => stopReeling("p")}
+                  className="flex-1 h-20 text-2xl transition-all duration-200 active:bg-blue-600 active:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+                >
+                  <ArrowDown className="mr-2 h-10 w-10" /> Reel Out
+                </Button>
               </div>
             </CardContent>
           </Card>
         </div>
+
+        {/* ... (rest of the JSX remains unchanged) */}
+      </div>
         {/* Joystick */}
         <div className="border border-neutral-700 p-6 rounded-lg shadow-lg col-span-1">
           <h2 className="text-2xl font-subheading mb-4">Movement</h2>
