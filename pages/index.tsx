@@ -220,7 +220,7 @@ export default function Component() {
   return (
     <div className="min-h-screen bg-neutrak-900 text-neutral-200 p-6 rounded-lg max-w-full mx-auto">
       <h1 className="text-5xl font-heading text-center mb-3 font-'Lilita One'">
-        Xodium
+        Crused
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
         {/* Front Claw */}
