@@ -374,7 +374,7 @@ export default function Component() {
               </CardContent>
             </Card>
 
-            <Card className="bg-neutral-950 border-neutral-700 text-body font-body">
+            <Card className="bg-neutral-950 border-neutral-700 text-body font-body m-0">
               <CardHeader>
                 <CardTitle className="font-subheading text-2xl">
                   Pulley System
@@ -406,7 +406,47 @@ export default function Component() {
               </CardContent>
             </Card>
           </div>
-
+          <Card className="bg-neutral-950 border-neutral-700 text-body font-body">
+            <CardHeader>
+              <CardTitle className="font-subheading text-2xl">
+                Connection
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Badge
+                  variant={isConnected ? "default" : "destructive"}
+                  className="h-6 px-2 text-sm"
+                >
+                  {isConnected ? (
+                    <>
+                      <Wifi className="mr-2 h-4 w-4" />
+                      Connected
+                    </>
+                  ) : (
+                    <>
+                      <Wifi className="mr-2 h-4 w-4" />
+                      Disconnected
+                    </>
+                  )}
+                </Badge>
+                <Button
+                  variant={isConnected ? "destructive" : "default"}
+                  onClick={connectWebSocket}
+                >
+                  {isConnected ? "Disconnect" : "Connect"}
+                </Button>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-medium">Power</span>
+                <Switch
+                  checked={isPoweredOn}
+                  onCheckedChange={setIsPoweredOn}
+                  disabled={!isConnected}
+                />
+              </div>
+            </CardContent>
+          </Card>
           {/* ... (rest of the JSX remains unchanged) */}
         </div>
         {/* Joystick */}
