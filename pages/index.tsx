@@ -270,7 +270,7 @@ export default function Component() {
                     onValueChange={(newValue) => handleSliderChange(setValue, newValue)}
                     max={180}
                     step={1}
-                    className="[&_[role=slider]]:bg-slate-450"
+                    className="[&_[role=slider]]:bg-zinc-200"
                   />
                   <span className="text-sm text-neutral-400 ml-3">
                     {value}/180
